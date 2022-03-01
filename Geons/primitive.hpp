@@ -1,23 +1,34 @@
 #include <cmath>
+#include <Eigen/Core>
+#include <Eigen/LU>
+#include <vector>
+
+using Eigen::VectorXd;
+using std::vector;
+
+class Point{
+    double x,y,z;
+};
+
 class Shape {            
      protected:
-          long xo, yo, area, perimeter;
+          long area_, perimeter_;
      public:
-          virtual void area()=0;
-          virtual void parimeter()=0;
+          virtual void area();
+          virtual void parimeter();
 };
 class Square : public Shape {
      private:
           long side;          
      public:
           Square(){      
-              area=perimeter=side=0;
+              area_=perimeter_=side=0;
           }
           void area(){
-              area=side*side;       
+              area_=side*side;       
           }
           void parimeter(){
-              perimeter=4*side;       
+              perimeter_=4*side;       
           }
 };
 
@@ -26,33 +37,38 @@ class Rectangle : public Shape {
           long length, width;          
      public:
           Rectangle(){      
-              area=perimeter=length=width=0;
+              area_=perimeter_=length=width=0;
           }
           void area(){
-              area=length*width;       
+              area_=length*width;       
           }
           void parimeter(){
-              perimeter=2*(length+width);       
+              perimeter_=2*(length+width);       
           }
 };
 
 class Circle : public Shape {
      private:
-          long radius;          
+            long radius;          
      public:
-          Circle(){      
-              area=perimeter=radius=0;
-          }
-          void area(){
-              area=M_PI*radius*radius;       
-          }
-          void parimeter(){
-              perimeter=2*M_PI*(radius);       
-          }
+            Circle(){      
+                area_=perimeter_=radius=0;
+            }
+            void area(){
+                area_=M_PI*radius*radius;       
+            }
+            void parimeter(){
+                perimeter_=2*M_PI*(radius);       
+            }
+            void fit(vector<Point> points){
+                perimeter_=2*M_PI*(radius);       
+            }
 };
 
-
 class Primitives{
-    Shape 
+    public:
+        Circle circle;
+        Rectangle rectangle;
+        Square sqaure;
 
-}
+};

@@ -23,7 +23,7 @@
 #include <opencv2/opencv.hpp>
 #include <Eigen/Core>
 #include <Eigen/LU>
-#include "primitives.hpp"
+#include "primitive.hpp"
 
 using namespace cv;
 using namespace std;
@@ -33,6 +33,7 @@ using Eigen::RowVectorXd;
 using Eigen::MatrixXd;
 using Eigen::Matrix;
 
+RNG rng(1);
 
 int main(){
 
@@ -42,9 +43,27 @@ int main(){
     vector<double> b_vec;
 
     Mat image = imread("/home/aswath/umd/experiments/Vision/Geons/primitives.jpeg");
+    Mat gray_image;
+
+    cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
+
+    Mat binary_image;
+    cv::threshold(gray_image, binary_image, 100, 120, cv::THRESH_BINARY_INV);
+    imshow("Image", binary_image);
+
+    vector<vector<cv::Point>> contours;
+    vector<Vec4i> hierarchy;
+    cv::findContours(binary_image, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     
-    imshow("Image",image);
-    waitKey(1000);
+    Mat drawing = Mat::zeros( binary_image.size(), CV_8UC3 );
+    for( size_t i = 0; i< contours.size(); i++ )
+    {
+        Scalar color = Scalar( rng.uniform(0, 256), rng.uniform(0,256), rng.uniform(0,256) );
+        drawContours( drawing, contours, (int)i, color, 2, LINE_8, hierarchy, 0 );
+    }
+    imshow( "Contours", drawing );
+
+    waitKey(5000);
 
 
     return 0;
