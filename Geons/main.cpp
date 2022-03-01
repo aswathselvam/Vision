@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <unistd.h>
 #include <Eigen/Core>
 #include <Eigen/LU>
 #include "primitive.hpp"
@@ -33,6 +34,7 @@ using Eigen::RowVectorXd;
 using Eigen::MatrixXd;
 using Eigen::Matrix;
 
+std::string GetCurrentWorkingDir();
 RNG rng(1);
 
 int main(){
@@ -42,7 +44,8 @@ int main(){
     vector<double> A_vec;
     vector<double> b_vec;
 
-    Mat image = imread("/home/aswath/umd/experiments/Vision/Geons/primitives.jpeg");
+    std::string path = GetCurrentWorkingDir();
+    Mat image = imread(path+"/../primitives.jpeg");
     Mat gray_image;
 
     cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
@@ -67,4 +70,10 @@ int main(){
 
 
     return 0;
+}
+
+std::string GetCurrentWorkingDir()
+{
+    std::string cwd("\0",FILENAME_MAX+1);
+    return getcwd(&cwd[0],cwd.capacity());
 }
