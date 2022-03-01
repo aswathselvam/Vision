@@ -66,10 +66,10 @@ int main(){
     {
         Scalar color = Scalar( rng.uniform(0, 256), rng.uniform(0,256), rng.uniform(0,256) );
         drawContours( drawing, contours, (int)i, color, 2, LINE_8, hierarchy, 0 );
+        imshow( "Contours", drawing );
+        waitKey(1000);
     }
-    imshow( "Contours", drawing );
 
-    waitKey(2000);
 
 
     return 0;
