@@ -46,18 +46,21 @@ int main(){
 
     std::string path = GetCurrentWorkingDir();
     Mat image = imread(path+"/../primitives.jpeg");
-    Mat gray_image;
+    cv::resize(image, image,cv::Size(500,500));
 
+    Mat gray_image;
     cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
 
     Mat binary_image;
-    cv::threshold(gray_image, binary_image, 100, 120, cv::THRESH_BINARY_INV);
+    cv::threshold(gray_image, binary_image, 200, 255, cv::THRESH_BINARY_INV);
+    // cv::adaptiveThreshold(gray_image,binary_image,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,cv::THRESH_BINARY,11,2);
+
     imshow("Image", binary_image);
 
     vector<vector<cv::Point>> contours;
     vector<Vec4i> hierarchy;
-    cv::findContours(binary_image, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    
+    cv::findContours(binary_image, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
+
     Mat drawing = Mat::zeros( binary_image.size(), CV_8UC3 );
     for( size_t i = 0; i< contours.size(); i++ )
     {
@@ -66,7 +69,7 @@ int main(){
     }
     imshow( "Contours", drawing );
 
-    waitKey(5000);
+    waitKey(2000);
 
 
     return 0;
