@@ -17,15 +17,16 @@ class MeanShift:
             for pixel_j in range(self.w):
                 window_center_i = pixel_i
                 window_center_j = pixel_j
-                prev_mean= float('inf')
-                mean = 0
-                while(abs(prev_mean-mean)>self.THRESHOLD):
+                prev_mean= np.array([float('inf'),float('inf')])
+                mean =  np.array([0,0])
+                while(any(abs(prev_mean-mean)>self.THRESHOLD)):
                     prev_mean = mean
                     x,dx= window_center_i, self.windowSize
                     y,dy= window_center_j, self.windowSize
                     feature = self.image[x:x+dx, y:y+dy]
                     # print(feature)
-                    feature = feature - mean
+                    center_feature =  self.image[x, y]
+                    feature = feature - center_feature
                     # print("Relative featre:\n ",feature)
                     norm = np.linalg.norm(feature,axis=2)
                     # norm = feature.sum(axis=2)
@@ -33,23 +34,31 @@ class MeanShift:
                     # print("Norm:\n",norm)
                     x_range = np.arange(x,x+dx, 1, dtype=int)
                     y_range = np.arange(y,y+dy, 1, dtype=int)
-                    total_norm = np.linalg.norm(norm)*5
+                    total_norm = np.linalg.norm(norm)/4
                     weighted_distance_x = x_range * norm/total_norm
                     weighted_distance_y = y_range *norm/total_norm
-                    # print("weignted distance:\n",weighted_distance_x)
+                    print("weignted distance:\n",weighted_distance_x)
+                    print("weignted distance:\n",weighted_distance_y)
 
                     window_center_i =  int(np.mean(weighted_distance_x))
                     window_center_j =  int(np.mean(weighted_distance_y))
                     # print(window_center_i)
+                    mean = np.array([window_center_i,window_center_j])
                     input(prev_mean-mean)
                 
                 prev_dist = float('inf')
                 for mode,_ in classes.items():
-                    dist = np.linalg(mean-mode)
-                    if dist < prev_dist:
-                        mean = mode
-                classes[mean].append([pixel_i,pixel_j]) 
-                
+                    if mode:
+                        dist = np.linalg(mean-np.array(mode))
+                        if dist < self.THRESHOLD:
+                            prev_dist = mode
+                if prev_dist == float('inf'):
+                    classes[(mean[0],mean[1])] = [pixel_i,pixel_j]
+                else:    
+                    classes[(mean[0],mean[1])].append([pixel_i,pixel_j]) 
+            
+            print("Classes:\n",classes)
+
         pass
 
 
