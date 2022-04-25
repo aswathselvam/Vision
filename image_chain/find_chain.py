@@ -67,7 +67,7 @@ def findChain(r, c):
     return path_available
 
 
-# Start the search 
+# Start the search from (3,4)
 result = findChain(3,4)
 print("Path found? ", result)
-print("Found path is: ", path.keys())
+print("Found path is: ", list(path.keys()))
